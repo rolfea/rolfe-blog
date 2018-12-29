@@ -79,4 +79,5 @@ theme: landscape
 ## Docs: https://hexo.io/docs/deployment.html
 deploy: 
   type: heroku
-  repo: https://github.com/rolfea/rolfe-blog
+  repo: https://git.heroku.com/rolfe-blog.git
+ 
