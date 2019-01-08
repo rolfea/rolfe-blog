@@ -19,6 +19,7 @@ tags:
 
 After some ugly moments in which I remembered how much fun it is to play with promises in JavaScript, the API is finally returning what I need: an object with state and district values. This example uses the JavaScript Fetch API to issue a call to the Sunlight Labs’ district lookup method. We pass in the sample latitude and longitude (or replace with your own) from the API documentation. This call returns a promise object, so we’ll use the `.then` method to pass a callback that waits for the response object and then calls `.json()` on it when received. Because `.json` also returns a promise, we’ll use `.then()` again and just log the results of our response so we can look at it. If you’re following along, you can test the logic right now. Just open the developer tools in your browser and try out the commands below:
 
+```js
 const lat = 42.96
 const long = -108.09
 
@@ -27,5 +28,6 @@ fetch(\`https://congress.api.sunlightfoundation.com/districts/locate?latitude=${
     (jsonObject) => console.log(jsonObject.results\\\[0\\\])
   )
 )
+```
 
 (Also take a moment to appreciate how nice this looks with ES6 arrow functions!) In the following post I’ll walk through pulling out the location service, the political api, and wrapping it into a single library. I’ll also cover writing tests for that library and publishing it to NPM.

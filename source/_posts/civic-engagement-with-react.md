@@ -18,33 +18,38 @@ This time coincided with the Fall 2016 elections in the US, and I felt motivated
 
 I access the user’s location when they first navigate to the site. The WebAPI has documentation on how the geolocation object behaves, but the basics are pretty straight forward. You ask for the latitude and longitude, the browser then asks the user if that is ok, and if they accept, an asynchronous request is made which returns an object that contains that information. I used a great library to modify the geolocation behavior into something more React savvy. [React-Geolocated](https://github.com/no23reason/react-geolocated) allows you to wrap an existing component, passing the geolocation details as props. This makes accessing and reasoning with the latitude and longitude as simple as
 
+```js
     const lat = props.coords.latitude;
     const long = props.coords.longitude;
-    
+```
 
 React’s `componentWillReceiveProps` method makes it a simple matter to wait for the location data to load as well. It will run when the props are updated in the app with the coordinates of the user:
 
+```js
     componentWillReceiveProps(nextProps) {
         if (nextProps.coords !== null) {
             useUserLocationToMakeADifference(coords);
         }
     }
-    
+```
 
 The [Sunlight Foundation’s Congress API](https://sunlightlabs.github.io/congress/) is a really exciting tool. Although they’ve announced recently that they are moving over management of this API to ProPublica, it is still currently hosted at their old URL and doesn’t require an API key to function. I’m not sure what the timeline is on this transition, but both parties have been quick to respond to any inquiries I’ve had about the API and are obviously doing great civic work by giving free access of this data to the public. The call I’m making to the API is very straightforward. After I have the user’s location, I simply format that into a request like this
 
+```js
     fetch(`https://congress.api.sunlightfoundation.com/legislators/locate?latitude=${lat}&amp;longitude=${long}`)
-    
+``` 
 
 At this point it’s just a matter of formatting and presenting the response data. I pull out the relevant data from the results objects, in this case the name, phone number, and email address of each legislator. I wrote some helper methods that I won’t detail here, but the basic implementation looks a like this
 
+```js
     extractName(this.state.repArray[0])
     extractPhone(this.state.repArray[0])
     extractEmail(this.state.repArray[0])
-    
+```
 
 Finally, I used an interesting trick that my mentor, Brian Douglas, showed me for rigging up an ajax spinner while the data is being fetched. When the component is mounted, the `repArray` is set to null, so I can use that state to track when the data is ready to display by using a ternary operator to render either the data or a loader.
 
+```js
     render () {
         return this.state.repArray ?
             <LegislatorData 1>
@@ -52,7 +57,7 @@ Finally, I used an interesting trick that my mentor, Brian Douglas, showed me fo
             <LegislatorData 3>
         : <AjaxLoader>
     }
-    
+``` 
 
 ### Next Steps
 

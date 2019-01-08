@@ -95,7 +95,218 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://alexjrolfe.com/2018/12/21/funWithGenerators/" data-id="cjqi0cnjz00005lp4sskbyapw" class="article-share-link">Share</a>
+      <a data-url="http://alexjrolfe.com/2018/12/21/funWithGenerators/" data-id="cjqnb7xqk00057up4c7t3e5gf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-civic-engagement-with-react" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/14/civic-engagement-with-react/" class="article-date">
+  <time datetime="2017-07-14T18:04:19.000Z" itemprop="datePublished">2017-07-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Uncategorized/">Uncategorized</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/14/civic-engagement-with-react/">Civic Engagement With React</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>I built <a href="https://you-work-for-me.netlify.com/" target="_blank" rel="noopener">You Work For Me</a> as part of the last quarter of my bloc.io program. The curriculum covers the Ruby/Rails and JavaScript/AngularJs stacks, but, having not had a great time with AngularJs, I was interested in exploring something new. My mentor suggested I try React.</p>
+<h3 id="The-Initial-Idea"><a href="#The-Initial-Idea" class="headerlink" title="The Initial Idea"></a>The Initial Idea</h3><p>This time coincided with the Fall 2016 elections in the US, and I felt motivated to create something to encourage people to engage more in our political processes. I decided to build something that makes it easier to contact your congressional representatives. Below, I describe in more detail what my site, named You Work For Me, does and how I put it together. I finish with some ideas about the direction I’d like to take future development. The basic form of the app is as follows: a user navigates to the site and is presented with the contact information of their three congressional representatives. While simple, this foundation was easy to understand so that I was able to focus on learning React as well, and contains a basic set of features that I can augment in the future. The way YWFM gets and presents the congressional data is relatively straightforward. First, it takes the latitude and longitude of the user from the geolocation object in the browser, then sends an API request to the Sunlight Foundation’s Congress API, and finally, displays that data in a useful format to the user.</p>
+<h3 id="Some-Details"><a href="#Some-Details" class="headerlink" title="Some Details"></a>Some Details</h3><p>I access the user’s location when they first navigate to the site. The WebAPI has documentation on how the geolocation object behaves, but the basics are pretty straight forward. You ask for the latitude and longitude, the browser then asks the user if that is ok, and if they accept, an asynchronous request is made which returns an object that contains that information. I used a great library to modify the geolocation behavior into something more React savvy. <a href="https://github.com/no23reason/react-geolocated" target="_blank" rel="noopener">React-Geolocated</a> allows you to wrap an existing component, passing the geolocation details as props. This makes accessing and reasoning with the latitude and longitude as simple as</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> lat = props.coords.latitude;</span><br><span class="line"><span class="keyword">const</span> long = props.coords.longitude;</span><br></pre></td></tr></table></figure>
+<p>React’s <code>componentWillReceiveProps</code> method makes it a simple matter to wait for the location data to load as well. It will run when the props are updated in the app with the coordinates of the user:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">componentWillReceiveProps(nextProps) &#123;</span><br><span class="line">    <span class="keyword">if</span> (nextProps.coords !== <span class="literal">null</span>) &#123;</span><br><span class="line">        useUserLocationToMakeADifference(coords);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The <a href="https://sunlightlabs.github.io/congress/" target="_blank" rel="noopener">Sunlight Foundation’s Congress API</a> is a really exciting tool. Although they’ve announced recently that they are moving over management of this API to ProPublica, it is still currently hosted at their old URL and doesn’t require an API key to function. I’m not sure what the timeline is on this transition, but both parties have been quick to respond to any inquiries I’ve had about the API and are obviously doing great civic work by giving free access of this data to the public. The call I’m making to the API is very straightforward. After I have the user’s location, I simply format that into a request like this</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">    fetch(<span class="string">`https://congress.api.sunlightfoundation.com/legislators/locate?latitude=<span class="subst">$&#123;lat&#125;</span>&amp;amp;longitude=<span class="subst">$&#123;long&#125;</span>`</span>)</span><br><span class="line"><span class="string">``</span><span class="string">` </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">At this point it’s just a matter of formatting and presenting the response data. I pull out the relevant data from the results objects, in this case the name, phone number, and email address of each legislator. I wrote some helper methods that I won’t detail here, but the basic implementation looks a like this</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">`</span><span class="string">``</span>js</span><br><span class="line">    extractName(<span class="keyword">this</span>.state.repArray[<span class="number">0</span>])</span><br><span class="line">    extractPhone(<span class="keyword">this</span>.state.repArray[<span class="number">0</span>])</span><br><span class="line">    extractEmail(<span class="keyword">this</span>.state.repArray[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<p>Finally, I used an interesting trick that my mentor, Brian Douglas, showed me for rigging up an ajax spinner while the data is being fetched. When the component is mounted, the <code>repArray</code> is set to null, so I can use that state to track when the data is ready to display by using a ternary operator to render either the data or a loader.</p>
+<pre><code class="js">render () {
+    <span class="keyword">return</span> <span class="keyword">this</span>.state.repArray ?
+        &lt;LegislatorData <span class="number">1</span>&gt;
+        &lt;LegislatorData <span class="number">2</span>&gt;
+        &lt;LegislatorData <span class="number">3</span>&gt;
+    : &lt;AjaxLoader&gt;
+}
+</code></pre>
+<h3 id="Next-Steps"><a href="#Next-Steps" class="headerlink" title="Next Steps"></a>Next Steps</h3><p>Midway through the development of YWFM I was fortunate enough to get a job. Between moving to Madison, WI and getting ramped up on a new technology stack, I had to put the development of several features on hold. Probably the most pressing need is to allow the user to enter their own location if they don’t want to or cannot allow the browser to access their physical location. My goal was to get the legislative contact information in front of a user in as few steps as possible, but now I need to gracefully handle that absence of the user’s location. Along the lines of “basic usability,” the app doesn’t look fantastic on mobile devices at the moment, so some work needs to be done on adjusting the styling and formatting to account for different screen sizes. I want to have the option for a user to set up reminders to call their representatives regularly. Either by having an option to populate a calendar on the device used to access the data, regular email reminders, or setting up text reminders with a service like Twilio. I think it would be interesting to be able to present recent congressional activity, whether that is votes or other recorded data. This could simply be displayed at the landing page for each legislator, or a user could similarly opt in to text or email notifications. Adding more features to the core features of the app could potentially complicate the management of state, so I am interested in adding the Redux library as a way to manage state in the app. If the idea of civic engagement through programming is interesting to you, let’s get involved! Help with any of the features above, other ideas, or even just a little help refactoring are more than welcome. <a href="https://github.com/rolfea/you-work-for-me" target="_blank" rel="noopener">Let’s work together</a> to make it easier for citizens to tell their legislators: “You work for me!”</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://alexjrolfe.com/2017/07/14/civic-engagement-with-react/" data-id="cjqnb7xq300007up4htw0mwao" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-separating-the-location-features" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/15/separating-the-location-features/" class="article-date">
+  <time datetime="2017-01-15T20:17:27.000Z" itemprop="datePublished">2017-01-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Uncategorized/">Uncategorized</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/15/separating-the-location-features/">Separating the Location Features</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="http://youworkforme.netlify.com/" target="_blank" rel="noopener">You Work for Me</a> is an app I’m building as a way to learn React. YWFM uses the Web API’s geolocation capabilities alongside the Sunlight Lab Congress API to determine the user’s congressional representatives, supplying them with contact information. My mentor, <a href="https://briandouglas.me/" target="_blank" rel="noopener">Brian</a>, and I decided that the functionality that determines the location and correct legislators would be a good candidate to abstract away from this app into a separate library. I decided to use the <a href="https://github.com/survivejs/react-component-boilerplate" target="_blank" rel="noopener">SurviveJS component boiler plate</a> to generate the base for my library. I made this decision for the sake of time. I know I will learn a lot when I set up my own boilerplate, but for now I’d rather have my project ready to demonstrate at an interview than get stuck in the weeds trying to configure a whole mess of dependencies just to get off the ground. The SurviveJS boilerplate is very simple to set up. As per their instructions, just clone the repo, remove the .git file and run <code>git init</code> to hook up the cloned folder to your own repository instead. Finally, use <code>npm install</code> to install the dependencies. I want to hone down my library to do one specific task really well, so rather than offering a suite of location based services, the library will provide the congressional district of the user, based on the location returned by the Geolocation API. Because a user must give the browser permission, the library needs to have a graceful default if permission isn’t granted or if geolocation isn’t enabled or possible for some reason. The first steps I need to complete in order to have this library functioning are as follows:</p>
+<ul>
+<li><p>Test the API that returns district numbers, seeing what form the returned data takes</p>
+</li>
+<li><p>Insert that API into my current app to bring in the district numbers</p>
+</li>
+<li><p>ID the correct rep. for the user and provide their contact information</p>
+</li>
+</ul>
+<p>After some ugly moments in which I remembered how much fun it is to play with promises in JavaScript, the API is finally returning what I need: an object with state and district values. This example uses the JavaScript Fetch API to issue a call to the Sunlight Labs’ district lookup method. We pass in the sample latitude and longitude (or replace with your own) from the API documentation. This call returns a promise object, so we’ll use the <code>.then</code> method to pass a callback that waits for the response object and then calls <code>.json()</code> on it when received. Because <code>.json</code> also returns a promise, we’ll use <code>.then()</code> again and just log the results of our response so we can look at it. If you’re following along, you can test the logic right now. Just open the developer tools in your browser and try out the commands below:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> lat = <span class="number">42.96</span></span><br><span class="line"><span class="keyword">const</span> long = <span class="number">-108.09</span></span><br><span class="line"></span><br><span class="line">fetch(\<span class="string">`https://congress.api.sunlightfoundation.com/districts/locate?latitude=<span class="subst">$&#123;lat&#125;</span>&amp;longitude=<span class="subst">$&#123;long&#125;</span>\`).then(</span></span><br><span class="line"><span class="string">  (res) =&gt; res.json().then(</span></span><br><span class="line"><span class="string">    (jsonObject) =&gt; console.log(jsonObject.results\\\[0\\\])</span></span><br><span class="line"><span class="string">  )</span></span><br><span class="line"><span class="string">)</span></span><br></pre></td></tr></table></figure>
+<p>(Also take a moment to appreciate how nice this looks with ES6 arrow functions!) In the following post I’ll walk through pulling out the location service, the political api, and wrapping it into a single library. I’ll also cover writing tests for that library and publishing it to NPM.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://alexjrolfe.com/2017/01/15/separating-the-location-features/" data-id="cjqnb7xqf00037up432ozrfnh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-enter-the-eloquence-eloquent-javascript-chapter-2" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/29/enter-the-eloquence-eloquent-javascript-chapter-2/" class="article-date">
+  <time datetime="2016-11-29T23:09:21.000Z" itemprop="datePublished">2016-11-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Uncategorized/">Uncategorized</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/29/enter-the-eloquence-eloquent-javascript-chapter-2/">Enter the Eloquence - Eloquent JavaScript, Chapter 2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>I’m aiming to bring my JavaScript chops up a level or two, and I’ve decided to address this first by working through all of <a href="http://eloquentjavascript.net/" target="_blank" rel="noopener">Eloquent JavaScript</a> by Marijin Haverbeke. I’m going to do each chapter’s exercises and post them here with my thoughts. This will have the benefit of forcing me to clarify my thinking on the solutions, and it could also help someone else who might be struggling with the ideas. The book is definitely a dense read. So far, the first two chapters are written in a style that is not quite conversational and not quite formal. It has the odd effect on me of an almost instant-glaze over, which is requiring a slower reading pace. This probably exacerbated by the fact that I’m using a e-book version, not a hard copy. Slowing down my pace of reading is fine though, since I don’t want to miss any details in my deep-dive into this language! So, without further ado:<br><strong>Loops to Make a Triangle</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Looping a Triangle</span></span><br><span class="line"><span class="comment">// For Loop</span></span><br><span class="line"><span class="keyword">var</span> hashTriangle = <span class="string">""</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt;= <span class="number">7</span>; i++) &#123;</span><br><span class="line">  hashTriangle += <span class="string">"#"</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(hashTriangle);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// While Loop</span></span><br><span class="line">hashTriangle = <span class="string">""</span></span><br><span class="line"><span class="keyword">while</span> (hashTriangle.length &lt;= <span class="number">7</span>) &#123;</span><br><span class="line">  hashTriangle += <span class="string">"#"</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(hashTriangle);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Not much to say here. I decided to try two simple implementations, one with a for-loop and the other with a while-loop. <strong>The Fizz Buzz Problem</strong></p>
+ <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Fizz Buzz</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">20</span>; i ++) &#123;</span><br><span class="line">  divByThree = (i % <span class="number">3</span> == <span class="number">0</span>);</span><br><span class="line">  divByFive = (i % <span class="number">5</span> == <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (divByThree &amp;&amp; divByFive) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"FizzBuzz"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (divByFive) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"Buzz"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (divByThree) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"Fizz"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Whenever I work on a FizzBuzz type of challenge, I have a nagging feeling in the back of my mind that I’m doing extremely naive work and that there is a much fancier, elegant way to solve the problem than I have discovered so far. <a href="http://ditam.github.io/posts/fizzbuzz/" target="_blank" rel="noopener">It would seem that this is the case</a>, but I’m not going to worry about that for now. This being my third time thinking through the problem at some length greater than 30 minutes, I’m happy with my smallish refactoring, that being that I saved the results of the modulo operations to variables to avoid repeating the operation unnecessarily. <strong>Create a Chess Board String</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Chess Board String</span></span><br><span class="line"><span class="keyword">var</span> chessBoard = <span class="string">""</span>;</span><br><span class="line"><span class="keyword">var</span> size = <span class="number">8</span>;</span><br><span class="line"><span class="comment">// set height</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">  <span class="comment">// set each row</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; size / <span class="number">2</span>; j++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (i % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      chessBoard += <span class="string">"# "</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      chessBoard += <span class="string">" #"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  chessBoard += <span class="string">"\\n"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(chessBoard);</span><br></pre></td></tr></table></figure>
+<p>This was an interesting problem to play with. I think my biggest hang-up was simply that I struggled to get away from the notion of implementing this as a 2D array, rather than a formatted string. I may come back to this, as I feel there are more interesting, compact solutions available than what I came up with. So, there are my solutions to the three exercises from Eloquent JavaScript, chapter 2. If you found interesting ways to solve any of them, please let me know. I love being shown how weak my Kung-Fu is, so have at me!</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://alexjrolfe.com/2016/11/29/enter-the-eloquence-eloquent-javascript-chapter-2/" data-id="cjqnb7xq900017up47dzkuyuc" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-hello-world" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/26/hello-world/" class="article-date">
+  <time datetime="2016-11-26T22:15:53.000Z" itemprop="datePublished">2016-11-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Uncategorized/">Uncategorized</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/26/hello-world/">Entering the World of OSS</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>I am beginning the final quarter of my <a href="http://bloc.io" target="_blank" rel="noopener">Bloc.io</a> curriculum today.</p>
+<p>This quarter is called the “Open-Source Apprenticeship,” and it asks me to create my own open-source software (OSS) project and to make ten significant contributions to other projects.</p>
+<p>I started my coursework with Bloc almost exactly a year ago from the day I’m writing this: November 23rd, 2015. It was a huge leap of faith to trust an essentially unproven model: a web-development “bootcamp” taking place entirely online (I’ve stopped calling this a “boot-camp” for a variety of reasons that I’ll be writing about later). But I girded my loins and made the last step in a pivot away from my music career diving in head first to 40+ hour weeks full of study, practice, and 1-on-1 meetings with my mentors.</p>
+<p>In that time I’ve learned so much! My coursework covered Back-End and Front-End web development technologies, mainly Ruby, Rails, Javascript, JQuery, and AngularJS. It focused on lots of “non-coding software developer skills,” like version control with git and GitHub, test-driven development with RSpec, and tons of code review and pair-programming with my professional mentors. In my third quarter, which I just finished, I got a chance to learn about the bigger-picture topics that are covered in computer science courses. I implemented many of the common data structures and algorithms, built an ORM reminiscent of Active Record, and made a Rails clone in order to better understand the decisions web engineers make in organizing code, handling routing concerns, and setting up a framework to handle the traditional MVC model.</p>
+<p>So, with all that work behind me now, the prospect of jumping into the OSS community to see what I can accomplish is exciting, to say the least. I’ve been brainstorming on several different personal projects that have potential and taking note of tools that I use frequently that I could start to contribute to myself.</p>
+<p>Some other goals I have for myself for the next three months are:</p>
+<ul>
+<li><a href="http://eloquentjavascript.net/" target="_blank" rel="noopener">level up</a> my Javascript skills</li>
+<li>investigate different JS frameworks</li>
+<li>find a great testing suite for Javascript development</li>
+<li>making <a href="http://pryrepl.org/" target="_blank" rel="noopener">Pry</a> another component of my Ruby debugging process</li>
+<li><a href="https://chicagoruby.org/" target="_blank" rel="noopener">go to Chicago</a> at least twice a month to meet other developers</li>
+<li>clean up my prior projects from <a href="https://www.bloc.io/" target="_blank" rel="noopener">Bloc</a> for my portfolio</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://alexjrolfe.com/2016/11/26/hello-world/" data-id="cjqnb7xqi00047up46pq2h25l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -112,6 +323,13 @@
           <aside id="sidebar">
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Uncategorized/">Uncategorized</a></li></ul>
+    </div>
+  </div>
+
 
   
     
@@ -123,7 +341,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li></ul>
     </div>
   </div>
 
@@ -137,6 +355,22 @@
         
           <li>
             <a href="/2018/12/21/funWithGenerators/">Fun With Generators</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/14/civic-engagement-with-react/">Civic Engagement With React</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/15/separating-the-location-features/">Separating the Location Features</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/29/enter-the-eloquence-eloquent-javascript-chapter-2/">Enter the Eloquence - Eloquent JavaScript, Chapter 2</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/26/hello-world/">Entering the World of OSS</a>
           </li>
         
       </ul>
