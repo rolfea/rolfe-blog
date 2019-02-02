@@ -1,9 +1,9 @@
 ---
 title: Hoist The Jolly Roger
-tags: 
+tags: JavaScript, ES6
 ---
 
-I recently stumbled across [this article](https://www.linkedin.com/pulse/preparing-front-end-web-development-interview-2017-david-shariff/) from David Shariff while I was looking for JavaScript exercises for my students at [Bloc](https://www.bloc.io/). His article details topics across the entire front end that are extremely important, but what caught my eye in particular were the JavaScript concepts. In my continuous quest for **JavaScript World Domination**&trade; I thought this list was a great representation of "topics that I sort of understand, but that have to Google when I'm pressed for details" on, so I'm going to work through the concepts one by one.
+I recently stumbled across [this article](http://davidshariff.com/blog/preparing-for-a-front-end-web-development-interview-in-2017/) from David Shariff while I was looking for JavaScript exercises for my students at [Bloc](https://www.bloc.io/). His article details topics across the entire front end that are extremely important, but what caught my eye in particular were the JavaScript concepts. In my continuous quest for **JavaScript World Domination**&trade; I thought this list was a great representation of "topics that I sort of understand, but that have to Google when I'm pressed for details" on, so I'm going to work through these concepts one by one to solidify my understanding.
 
 ## Is Hoisting Foisting You?
 
@@ -14,7 +14,7 @@ My goto for any grainy, tough JS subject is going to be first and foremost [Kyle
 * [Hoisting](https://github.com/getify/You-Dont-Know-JS/blob/master/scope%20%26%20closures/ch4.md)
 * [ES6 Syntax](https://github.com/getify/You-Dont-Know-JS/blob/master/es6%20%26%20beyond/ch2.md)
 
- What I like to do when I'm bulking up on a topic is to go through his chapter on the relevant subject matter, then recreate all of his (very dry) examples with something that resonates more with me.[^1] If you are in a similar boat, I definitely recommend this approach as well. It's a great way to start to own the material in your own way and also just to get your dang fingers on the keyboard.
+ What I like to do when I'm bulking up on a topic is to go through his chapter on the relevant subject matter, then recreate all of his (very dry) examples with something that resonates more with me.[^1] I definitely recommend this approach for everyone. It's a great way to start to own the material and to get your dang fingers on the keyboard.
 
 If you find that you enjoy Kyle's style and approach, you might consider picking up the [whole series](https://www.amazon.com/gp/product/B01AY9P0P6/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01AY9P0P6&linkCode=as2&tag=rolfe-20&linkId=363b17d9b041fe4e217621bdfbe2cee7).  
 (I'm trying out the Amazon Affiliate program, so if you purchase the book from that link, I'll get something like 80 cents!)
@@ -25,7 +25,7 @@ This topic is dear to my heart because it sent me into a near existential crisis
 
 No.
 
-Well, not in the way that the term *hoisting* suggests. But it is a useful way to think this behavior. You'll see the phrase "hoistable" pop up a lot if you go read the ECMA specs for JavaScript[^2], so the term has been adopted by the internal team as well. But what actually happens is a little more nuanced. It warrants a whole post in of itself (see some of the Additional Reading below), but a sufficient summary might be: *JavaScript pulls declarations, but not initializations into memory before executing a block of code*
+Well, not in the way that the term *hoisting* suggests. But it is a useful way to think about this behavior. You'll see the phrase "hoistable" pop up a lot if you go read the ECMA specs for JavaScript[^2], so even the internal team finds the metaphor useful. But what actually happens is a little more nuanced. It warrants a whole post in of itself (see some of the Additional Reading below), but a sufficient summary might be: *JavaScript pulls declarations, but not initializations into memory before executing a block of code*
 
 When we talk about hoisting, we can talk about *Variable* hoisting and *Function* Hoisting. They behave pretty similarly, but there are a few distinctions to keep in mind, and so let's talk about them separately. Crack open your favorite [REPL](https://jsbin.com) environment and let's dive in.
 
@@ -46,7 +46,7 @@ console.log(dog);
 var dog = 'Fido';
 ```
 
-What about in this essentially identical similar question, presented with a little bit more of a cheeky setup?
+What about in this essentially identical question, presented with a little bit more of a cheeky setup?
 
 ```js
 function bar() {
@@ -62,7 +62,11 @@ bar();
 
 In both examples, the same principles are at play.
 
-If you run the above code, you'll find that it returns `undefined` in both cases. This is where we use the "hoisting" metaphor to explain this behavior. Imagine that JavaScript literally *pulls apart* your variable assignments into two parts and then *hoists* the declarations up to the top of the scope that they are introduced in.
+#### Hulk Smash
+
+If you run the above code, you'll find that it returns `undefined` in both cases. This is where we use the "hoisting" metaphor to explain this behavior. Imagine that JavaScript literally *pulls apart* your variable assignments and then *hoists* the declarations up to the top of the scope that they are introduced in.
+
+I like to imagine The Incredible Hulk leaping onto the scene, grabbing hold of your delicate variable, and rending it in two, tossing one half, the declaration, high up onto a building (the top of the block of scope you are in), before bounding off in search of other variables to harass.
 
 The first examples becomes:
 
@@ -96,12 +100,7 @@ bar();
 
 Notice that our hoisted variable declarations are brought to the top of their respective scopes.
 
-
 ### Function Hoisting
-
-*Hold on*, past-Alex says. *How do functions work in this world view? It doesn't seem to be consistent.*
-
-Too true, past-Alex. Let's dig into how functions apply hoisting next.
 
 Above, we covered the fact that variable declarations are "hoisted" to the top of their scope, but what about functions? At a glance, it seems like functions don't follow this rule of "process the declaration before the initialization."
 
@@ -129,7 +128,7 @@ var proclaimThisFact = function (fact) {
 
 This is called a **function expression**. Armed with your refined knowledge of how variable declarations behave, what do you think the difference is in behavior if you run my second example, modified to use a function expression?
 
-It blows up! Just like we expected the first example to. And pay close attention to the error you get here. It's a `TypeError`, not a `ReferenceError` like you might expect. (To see the difference, try to call a function that doesn't exist at all: `defamePasta("linguini")`)
+It blows up! Just like we expected the first example to. And pay close attention to the error you get here. It's a `TypeError`, not a `ReferenceError` like you might expect. (To see the difference, try to call a function that doesn't exist at all: `defamePasta("linguini")`).
 
 The error comes from the fact that we are asking our variable to be a function before it has been initialized as one:
 
@@ -145,7 +144,7 @@ proclaimThisFact = function (fact) {
 
 ### ES6's let and const
 
-`let` and `const` are ES6 additions to the original JavaScript syntax. They are interesting, helpful additions to the language for a variety of reasons, but for the purposes of our discussion of hoisting, we'll  just talk about one specific behavior, which is:
+`let` and `const` are ES6 compliments to the original JavaScript syntax. They are interesting, helpful additions to the language for a variety of reasons, but for the purposes of our discussion of hoisting, we'll  just talk about one specific behavior, which is:
 
 #### let and const are not hoisted
 
@@ -178,9 +177,10 @@ function bar() {
 
 * Just use `let` and `const` to avoid this nonsense
 * Only declarations are hoisted, not initializations
-* Function declarations (`function lookAtThisPizza() { ... }`) are fully hoisted, while with function expressions (`var lookAtThisPizza = function () { ... }`), only the variable is hoisted
+* Function declarations (`function lookAtThisPizza() { ... }`) are fully hoisted
+* In function expressions (`var lookAtThisPizza = function () { ... }`), only the variable is hoisted
 
-While ES6's `const` and `let` allow us a comfortable way to side step this issue by simply declaring our variables at the tops of our scopes and carrying on like civilized people, it is important to understand `var`'s hoisting behavior. For one, JavaScript is the most ubiquitous language in use and there are millions of lines of code running in production today that were created pre-ES6. You may one day have to maintain or refactor some of that code, and knowing why it behaves the way it does will be helpful.
+While ES6's `const` and `let` allow us a comfortable way to side step this issue by simply declaring our variables at the tops of our scopes and carrying on like civilized people, it is important to understand `var`'s hoisting behavior. For one, JavaScript is the most ubiquitous language in use on the web and there are millions of lines of code running in production today that were created pre-ES6. You may one day have to maintain or refactor some of that code, and knowing why it behaves the way it does will be helpful.
 
 Furthermore, [`let`](https://caniuse.com/#search=let) and [`const`](https://caniuse.com/#search=const) don't have complete browser support, so if you're forced to continue support for IE10 or something similar, you may need to hoist yourself up by your own bootstraps and navigate this quirk of the JavaScript language.
 
