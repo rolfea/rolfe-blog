@@ -1,7 +1,9 @@
 ---
 title: Hoist The Jolly Roger
-tags: JavaScript, ES6
+tags: 'JavaScript, ES6'
+date: 2019-02-02 06:13:13
 ---
+
 
 I recently stumbled across [this article](http://davidshariff.com/blog/preparing-for-a-front-end-web-development-interview-in-2017/) from David Shariff while I was looking for JavaScript exercises for my students at [Bloc](https://www.bloc.io/). His article details topics across the entire front end that are extremely important, but what caught my eye in particular were the JavaScript concepts. In my continuous quest for **JavaScript World Domination**&trade; I thought this list was a great representation of "topics that I sort of understand, but that have to Google when I'm pressed for details" on, so I'm going to work through these concepts one by one to solidify my understanding.
 
