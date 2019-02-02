@@ -81,3 +81,8 @@ deploy:
   type: heroku
   repo: https://git.heroku.com/rolfe-blog.git
  
+# Markdown-it config
+## Docs: https://github.com/celsomiranda/hexo-renderer-markdown-it/wiki/
+markdown:
+ plugins:
+    - markdown-it-footnote

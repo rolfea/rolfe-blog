@@ -96,13 +96,13 @@
 <li><a href="https://github.com/getify/You-Dont-Know-JS/blob/master/scope%20%26%20closures/ch4.md" target="_blank" rel="noopener">Hoisting</a></li>
 <li><a href="https://github.com/getify/You-Dont-Know-JS/blob/master/es6%20%26%20beyond/ch2.md" target="_blank" rel="noopener">ES6 Syntax</a></li>
 </ul>
-<p>What I like to do when I'm bulking up on a topic is to go through his chapter on the relevant subject matter, then recreate all of his (very dry) examples with something that resonates more with me.[^1] I definitely recommend this approach for everyone. It's a great way to start to own the material and to get your dang fingers on the keyboard.</p>
+<p>What I like to do when I'm bulking up on a topic is to go through his chapter on the relevant subject matter, then recreate all of his (very dry) examples with something that resonates more with me.<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup> I definitely recommend this approach for everyone. It's a great way to start to own the material and to get your dang fingers on the keyboard.</p>
 <p>If you find that you enjoy Kyle's style and approach, you might consider picking up the <a href="https://www.amazon.com/gp/product/B01AY9P0P6/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B01AY9P0P6&amp;linkCode=as2&amp;tag=rolfe-20&amp;linkId=363b17d9b041fe4e217621bdfbe2cee7" target="_blank" rel="noopener">whole series</a>.<br>
 (I'm trying out the Amazon Affiliate program, so if you purchase the book from that link, I'll get something like 80 cents!)</p>
 <h2>Hoisted By My Own Petard</h2>
 <p>This topic is dear to my heart because it sent me into a near existential crisis when I first learned about it. <em>What do you mean the JS engine just <strong>moves</strong> my code after I've written it?</em> past-Alex asked, incredulous at the thought of things happening underneath the surface. <strong>JavaScript <em>moves</em> my code around while it runs?!</strong></p>
 <p>No.</p>
-<p>Well, not in the way that the term <em>hoisting</em> suggests. But it is a useful way to think about this behavior. You'll see the phrase &quot;hoistable&quot; pop up a lot if you go read the ECMA specs for JavaScript[^2], so even the internal team finds the metaphor useful. But what actually happens is a little more nuanced. It warrants a whole post in of itself (see some of the Additional Reading below), but a sufficient summary might be: <em>JavaScript pulls declarations, but not initializations into memory before executing a block of code</em></p>
+<p>Well, not in the way that the term <em>hoisting</em> suggests. But it is a useful way to think about this behavior. You'll see the phrase &quot;hoistable&quot; pop up a lot if you go read the ECMA specs for JavaScript<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>, so even the internal team finds the metaphor useful. But what actually happens is a little more nuanced. It warrants a whole post in of itself (see some of the Additional Reading below), but a sufficient summary might be: <em>JavaScript pulls declarations, but not initializations into memory before executing a block of code</em></p>
 <p>When we talk about hoisting, we can talk about <em>Variable</em> hoisting and <em>Function</em> Hoisting. They behave pretty similarly, but there are a few distinctions to keep in mind, and so let's talk about them separately. Crack open your favorite <a href="https://jsbin.com" target="_blank" rel="noopener">REPL</a> environment and let's dive in.</p>
 <h3>Variable Hoisting</h3>
 <p>The first thing to keep in mind when we talk about hoisting is <em>declaration</em> versus <em>initialization</em>. Typically, you see these steps combined:</p>
@@ -139,7 +139,7 @@
 <p>When a variable is declared using either <code>const</code> or <code>let</code>, it is not hoisted in the way that we see above with <code>var</code>. Instead, its point of declaration is treated &quot;in-line.&quot; Essentially, it behaves closer to the way it looks in the written code.</p>
 <p>Take my original example, but we replace <code>var</code> with <code>const</code>:</p>
 <p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(dog);</span><br><span class="line"><span class="keyword">const</span> dog = <span class="string">'Fido'</span>;</span><br></pre></td></tr></table></figure></p>
-<p>Bam! We get hit with a reference error! And I argue, this is preferable to what we see as a result of hoisting + <code>var</code>. It's much better to trigger an error like this in development than to chase down strange bugs that are caused as a side effect of your variables sneaking around with <code>undefined</code> values. For that reason, I take the approach of always using <code>const</code>[^3] for my variables, rather than <code>var</code>. I haven't found any compelling reasons to use <code>var</code> when <code>const</code>/<code>let</code> are available to me.[^4]</p>
+<p>Bam! We get hit with a reference error! And I argue, this is preferable to what we see as a result of hoisting + <code>var</code>. It's much better to trigger an error like this in development than to chase down strange bugs that are caused as a side effect of your variables sneaking around with <code>undefined</code> values. For that reason, I take the approach of always using <code>const</code><sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup> for my variables, rather than <code>var</code>. I haven't found any compelling reasons to use <code>var</code> when <code>const</code>/<code>let</code> are available to me.<sup class="footnote-ref"><a href="#fn4" id="fnref4">[4]</a></sup></p>
 <p>A best practice that Kyle Simpson suggests in the above mentioned sources is to declare all of the variables you will be using at the tops of their relevant scopes:</p>
 <p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">bar();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> foo;</span><br><span class="line">  <span class="keyword">const</span> baz = <span class="number">10</span>;</span><br><span class="line">  </span><br><span class="line">  foo = baz;</span><br><span class="line">  <span class="built_in">console</span>.log(foo);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3>Key Takeaways</h3>
@@ -158,15 +158,24 @@
 <li><a href="http://davidshariff.com/blog/what-is-the-execution-context-in-javascript/" target="_blank" rel="noopener">David Shariff on Execution Context</a></li>
 </ul>
 <h3>Footnotes</h3>
-<p>[^1]: Generally, food based examples decrying improper pizza toppings or other less worthy snack foods.
-[^2]: You know, for fun.
-[^3]: I try to default to <code>const</code> and then change to <code>let</code> only when necessary.
-[^4]: Outside of writing examples for people running into this problem, of course.</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>Generally, food based examples decrying improper pizza toppings or other less worthy snack foods. <a href="#fnref1" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>You know, for fun. <a href="#fnref2" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p>I try to default to <code>const</code> and then change to <code>let</code> only when necessary. <a href="#fnref3" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn4" class="footnote-item"><p>Outside of writing examples for people running into this problem, of course. <a href="#fnref4" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://alexjrolfe.com/2019/02/02/HoistTheJollyRoger/" data-id="cjrnfwalz000bh6p4mgxxevl8" class="article-share-link">Share</a>
+      <a data-url="http://alexjrolfe.com/2019/02/02/HoistTheJollyRoger/" data-id="cjrng3f6w000bmxp4em1xpjnx" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript-ES6/">JavaScript, ES6</a></li></ul>
@@ -229,7 +238,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://alexjrolfe.com/2017/07/14/civic-engagement-with-react/" data-id="cjrnfwalc0001h6p4yevco6ny" class="article-share-link">Share</a>
+      <a data-url="http://alexjrolfe.com/2017/07/14/civic-engagement-with-react/" data-id="cjrng3f670001mxp4rtivd2bl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -284,7 +293,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://alexjrolfe.com/2017/01/15/separating-the-location-features/" data-id="cjrnfwal60000h6p4evf3emrr" class="article-share-link">Share</a>
+      <a data-url="http://alexjrolfe.com/2017/01/15/separating-the-location-features/" data-id="cjrng3f6c0004mxp43efzkjeh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -332,7 +341,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://alexjrolfe.com/2016/11/29/enter-the-eloquence-eloquent-javascript-chapter-2/" data-id="cjrnfwali0003h6p46rvzduj0" class="article-share-link">Share</a>
+      <a data-url="http://alexjrolfe.com/2016/11/29/enter-the-eloquence-eloquent-javascript-chapter-2/" data-id="cjrng3f630000mxp4u2shn2z3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -386,7 +395,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://alexjrolfe.com/2016/11/26/hello-world/" data-id="cjrnfwalk0004h6p425hct1ri" class="article-share-link">Share</a>
+      <a data-url="http://alexjrolfe.com/2016/11/26/hello-world/" data-id="cjrng3f6b0003mxp4ky2herx0" class="article-share-link">Share</a>
       
       
     </footer>
